@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: banking
+      POSTGRES_USER: banking
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-banking_dev_password}
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U banking -d banking"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      DEBUG: ${DEBUG:-1}
+      SECRET_KEY: ${SECRET_KEY:-dev-only-key-for-local-compose-do-not-use-elsewhere-0123456789}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DATABASE_URL: postgresql://banking:${POSTGRES_PASSWORD:-banking_dev_password}@db:5432/banking
+      DEMO_MODE: ${DEMO_MODE:-1}
+      ADMIN_URL: ${ADMIN_URL:-staff-console/}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-0}
+      RUN_MIGRATIONS: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

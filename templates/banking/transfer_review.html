@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Confirm transfer - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel">
+  <h1>Review and confirm</h1>
+  <p class="total">{{ amount|inr }}</p>
+  <dl class="kv" style="margin-bottom:1.25rem">
+    <dt>From</dt><dd>{{ source.display_name }} {{ source.masked_number }}</dd>
+    <dt>To</dt><dd>{{ target.customer.user.full_name }} {{ target.masked_number }}{% if same_owner %} <span class="tag dark">Your account</span>{% endif %}</dd>
+    {% if pending.remarks %}<dt>Remarks</dt><dd>{{ pending.remarks }}</dd>{% endif %}
+  </dl>
+  <p class="small muted">Check the recipient name carefully. Completed transfers cannot be undone from this portal.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.password %}
+    <div class="row">
+      <button class="btn" type="submit">Confirm transfer</button>
+      <button class="btn ghost" type="submit" name="cancel" value="1" data-keep formnovalidate>Cancel</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Open an account - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel">
+  <h1>Open a new account</h1>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.account_type %}
+    {% include "partials/field.html" with field=form.nickname %}
+    {% if form.initial_deposit %}{% include "partials/field.html" with field=form.initial_deposit %}{% endif %}
+    <button class="btn" type="submit">Open account</button>
+    <a class="btn ghost" href="{% url 'banking:dashboard' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

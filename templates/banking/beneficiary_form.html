@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Add beneficiary - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel">
+  <h1>Add a beneficiary</h1>
+  <p class="muted small">Enter the recipient's 12-digit Northstar account number. We confirm the account holder's name before you send money.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.nickname %}
+    {% include "partials/field.html" with field=form.account_number %}
+    {% include "partials/field.html" with field=form.confirm_account_number %}
+    <button class="btn" type="submit">Add beneficiary</button>
+    <a class="btn ghost" href="{% url 'banking:beneficiaries' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

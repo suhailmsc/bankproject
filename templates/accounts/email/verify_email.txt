@@ -1,0 +1,7 @@
+Hello {{ user.first_name }},
+
+Welcome to Northstar Bank. Please confirm your email address:
+
+{{ link }}
+
+The link is valid for 3 days. If you did not register, ignore this message.

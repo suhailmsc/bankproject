@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Send money - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel">
+  <h1>Send money</h1>
+  {% if not has_accounts %}
+    <p>You need an active account before you can send money.</p><a class="btn" href="{% url 'banking:open_account' %}">Open an account</a>
+  {% else %}
+  <p class="muted small">You can still send <strong class="num">{{ remaining|inr }}</strong> to other people today. Transfers between your own accounts are not limited.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.from_account %}
+    {% include "partials/field.html" with field=form.recipient %}
+    <p class="small" style="margin-top:-.5rem">Paying someone new? <a href="{% url 'banking:beneficiary_add' %}">Add a beneficiary</a> first.</p>
+    {% include "partials/field.html" with field=form.amount %}
+    {% include "partials/field.html" with field=form.remarks %}
+    <button class="btn" type="submit">Review transfer</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

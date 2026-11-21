@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Banking you can check the working of.</h1>
+    <p class="lead">Open savings and current accounts, move money to people you trust, and read every rupee on a statement that cannot be edited after the fact.</p>
+    <div class="row"><a class="btn" href="{% url 'accounts:register' %}">Open an account</a><a class="btn ghost" href="{% url 'accounts:login' %}">Sign in</a></div>
+  </div>
+  <div class="acct" aria-hidden="true">
+    <div class="kind"><span>Savings account</span><span class="tag">Active</span></div>
+    <div class="bal">&#8377;1,24,500.00</div>
+    <div class="no">&bull;&bull;&bull;&bull; 4821</div>
+  </div>
+</section>
+<section class="promises">
+  <div class="panel"><h3>Separate doors</h3><p class="small">Customers use this portal. Bank staff use a different console that customer credentials can never open.</p></div>
+  <div class="panel"><h3>Confirmed transfers</h3><p class="small">Every transfer is reviewed, then confirmed with your password, and capped by daily limits.</p></div>
+  <div class="panel"><h3>Immutable statements</h3><p class="small">Ledger entries are written once. Corrections are new entries, never edits.</p></div>
+</section>
+{% endblock %}

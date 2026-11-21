@@ -1,0 +1,19 @@
+{% load money %}
+<div class="tbl-wrap">
+<table>
+  <thead><tr><th>Date</th><th>Details</th><th class="r">Amount</th>{% if show_balance %}<th class="r">Balance</th>{% endif %}</tr></thead>
+  <tbody>
+  {% for e in entries %}
+    <tr>
+      <td class="num">{{ e.created_at|date:"d M Y, H:i" }}</td>
+      <td>{{ e.description }}{% if show_account %}<div class="small muted">{{ e.account.display_name }} {{ e.account.masked_number }}</div>{% endif %}
+        <div class="small muted"><a href="{% url 'banking:receipt' e.transaction.reference %}">{{ e.transaction.reference }}</a></div></td>
+      <td class="r num {% if e.direction == 'CR' %}cr{% else %}dr{% endif %}">{% if e.direction == 'CR' %}+{% else %}&minus;{% endif %}{{ e.amount|inr:False }}</td>
+      {% if show_balance %}<td class="r num">{{ e.balance_after|inr }}</td>{% endif %}
+    </tr>
+  {% empty %}
+    <tr><td colspan="4" class="muted">No transactions to show.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>

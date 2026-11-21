@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Sign-in locked{% endblock %}
+{% block content %}<div class="narrow panel"><h1>Too many failed attempts</h1><p>For your protection, sign-in is paused for a few minutes. If this was not you, reset your password once the pause ends.</p><a class="btn ghost" href="{% url 'accounts:password_reset' %}">Reset password</a></div>{% endblock %}

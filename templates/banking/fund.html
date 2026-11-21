@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Add demo funds - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel">
+  <h1>Add demo funds</h1>
+  <p class="muted">Adds fictional money to {{ account.display_name }} {{ account.masked_number }}. Up to {{ max_funding|inr }} per request. Real banks would take a payment here.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.amount %}
+    <button class="btn" type="submit">Add funds</button>
+    <a class="btn ghost" href="{% url 'banking:account_detail' account.pk %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

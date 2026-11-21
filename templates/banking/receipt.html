@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Receipt {{ txn.reference }} - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="receipt panel">
+  <p class="stamp">&#10003; {{ txn.get_status_display }}</p>
+  <div class="amt {% if is_sender %}dr{% else %}cr{% endif %}">{% if is_sender %}&minus;{% else %}+{% endif %}{{ txn.amount|inr }}</div>
+  <dl class="kv">
+    <dt>Reference</dt><dd class="num">{{ txn.reference }}</dd>
+    <dt>Date</dt><dd>{{ txn.created_at|date:"d M Y, H:i" }}</dd>
+    <dt>Type</dt><dd>{{ txn.get_kind_display }}</dd>
+    {% if txn.source_account %}<dt>From</dt><dd>{{ txn.source_account.customer.user.full_name }} {{ txn.source_account.masked_number }}</dd>{% endif %}
+    {% if txn.destination_account %}<dt>To</dt><dd>{{ txn.destination_account.customer.user.full_name }} {{ txn.destination_account.masked_number }}</dd>{% endif %}
+    {% if txn.remarks %}<dt>Remarks</dt><dd>{{ txn.remarks }}</dd>{% endif %}
+  </dl>
+  <div class="row noprint" style="margin-top:1.5rem"><a class="btn" href="{% url 'banking:dashboard' %}">Back to accounts</a><button class="btn ghost" type="button" data-keep data-print>Print receipt</button></div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ account.display_name }} - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <h1>{{ account.display_name }}</h1>
+    <p class="muted" style="margin:0">{{ account.get_account_type_display }} &middot; {{ account.status|capfirst }}</p>
+  </div>
+  <div class="row noprint">
+    {% if account.is_active %}<a class="btn" href="{% url 'banking:transfer' %}?from={{ account.pk }}">Send money</a>{% endif %}
+    {% if DEMO_MODE and account.is_active %}<a class="btn ghost" href="{% url 'banking:fund_account' account.pk %}">Add demo funds</a>{% endif %}
+  </div>
+</div>
+<div class="grid cols-2">
+  <section class="panel">
+    <h2>Balance</h2>
+    <p class="total">{{ account.balance|inr }}</p>
+  </section>
+  <section class="panel">
+    <h2>Account details</h2>
+    <dl class="kv">
+      <dt>Account number</dt><dd class="num">{{ account.account_number }} <button class="btn small ghost noprint" type="button" data-keep data-copy="{{ account.account_number }}">Copy</button></dd>
+      <dt>Branch code</dt><dd>{{ BANK_BRANCH_CODE }}</dd>
+      <dt>Holder</dt><dd>{{ user.full_name }}</dd>
+      <dt>Opened</dt><dd>{{ account.opened_at|date:"d M Y" }}</dd>
+    </dl>
+  </section>
+</div>
+
+<section class="panel" style="margin-top:1.25rem">
+  <div class="head" style="margin-bottom:.5rem"><h2 style="margin:0">Statement</h2>
+    <div class="row noprint"><a class="btn small ghost" href="?export=csv{% if query %}&amp;{{ query }}{% endif %}">Download CSV</a><button type="button" class="btn small ghost" data-keep data-print>Print</button></div></div>
+  <form method="get" class="row noprint" style="margin-bottom:1rem">
+    <label class="small">From <input type="date" name="start" value="{{ filters.start }}"></label>
+    <label class="small">To <input type="date" name="end" value="{{ filters.end }}"></label>
+    <label class="small">Show <select name="type"><option value="">All</option><option value="DR" {% if filters.type == 'DR' %}selected{% endif %}>Debits</option><option value="CR" {% if filters.type == 'CR' %}selected{% endif %}>Credits</option></select></label>
+    <button class="btn small" type="submit" data-keep>Filter</button>
+  </form>
+  {% include "partials/entries.html" with entries=page show_balance=True %}
+  <div class="pager noprint">
+    {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}{% if query %}&amp;{{ query }}{% endif %}">Newer</a>{% endif %}
+    <span class="muted small">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a href="?page={{ page.next_page_number }}{% if query %}&amp;{{ query }}{% endif %}">Older</a>{% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Open an account - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="narrow panel" style="max-width:680px">
+  <h1>Open your Northstar profile</h1>
+  <p class="muted">Takes two minutes. You can open your first account right after verifying your email.</p>
+  <form method="post" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    <div class="two">{% include "partials/field.html" with field=form.first_name %}{% include "partials/field.html" with field=form.last_name %}</div>
+    {% include "partials/field.html" with field=form.email %}
+    <div class="two">{% include "partials/field.html" with field=form.phone %}{% include "partials/field.html" with field=form.date_of_birth %}</div>
+    {% include "partials/field.html" with field=form.address_line %}
+    <div class="two">{% include "partials/field.html" with field=form.city %}{% include "partials/field.html" with field=form.state %}</div>
+    {% include "partials/field.html" with field=form.postal_code %}
+    {% include "partials/field.html" with field=form.password1 %}
+    {% include "partials/field.html" with field=form.password2 %}
+    {% include "partials/field.html" with field=form.accept_terms %}
+    <button class="btn" type="submit">Create profile</button>
+  </form>
+  <p class="small" style="margin-top:1rem">Already registered? <a href="{% url 'accounts:login' %}">Sign in</a></p>
+</div>
+{% endblock %}

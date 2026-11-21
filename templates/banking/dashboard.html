@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Accounts - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <p class="muted small" style="margin:0">Welcome back, {{ user.first_name }}</p>
+    <p class="total">{{ total|inr }}</p>
+    <p class="muted small" style="margin:0">Total across {{ accounts|length }} account{{ accounts|length|pluralize }}</p>
+  </div>
+  <div class="row"><a class="btn" href="{% url 'banking:transfer' %}">Send money</a><a class="btn ghost" href="{% url 'banking:open_account' %}">Open new account</a></div>
+</div>
+
+{% if accounts %}
+<div class="cards">
+  {% for a in accounts %}
+  <a class="acct{% if a.status == 'frozen' %} frozen{% endif %}" href="{% url 'banking:account_detail' a.pk %}">
+    <div class="kind"><span>{{ a.display_name }}</span>{% if a.status != 'active' %}<span class="tag">{{ a.get_status_display }}</span>{% endif %}</div>
+    <div class="bal">{{ a.balance|inr }}</div>
+    <div class="no">{{ a.masked_number }}</div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="panel"><h2>You have no accounts yet</h2><p>Open a savings or current account to start banking.</p><a class="btn" href="{% url 'banking:open_account' %}">Open your first account</a></div>
+{% endif %}
+
+<div class="grid cols-2" style="margin-top:1.5rem">
+  <section class="panel" style="grid-column: span 2">
+    <h2>Recent activity</h2>
+    {% include "partials/entries.html" with entries=recent show_account=True %}
+  </section>
+</div>
+<div class="grid cols-2" style="margin-top:1.25rem">
+  <section class="panel">
+    <h2>Transfer allowance</h2>
+    <p class="num" style="font-size:1.4rem;margin:0">{{ daily_remaining|inr }}</p>
+    <p class="small muted">left to send to other people today (limit {{ customer.daily_transfer_limit|inr }}).{% if not customer.is_kyc_verified %} Complete KYC to raise your limit.{% endif %}</p>
+  </section>
+  <section class="panel">
+    <h2>Sign-in security</h2>
+    {% if previous_login %}<p class="small">Previous sign-in: <strong>{{ previous_login.created_at|date:"d M Y, H:i" }}</strong>{% if previous_login.ip_address %} from {{ previous_login.ip_address }}{% endif %}.</p>{% else %}<p class="small">This is your first sign-in.</p>{% endif %}
+    <a href="{% url 'banking:activity' %}">Review all activity</a>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Profile - {{ BANK_NAME }}{% endblock %}
+{% block content %}
+<div class="head"><h1>Profile and security</h1></div>
+<div class="grid cols-2">
+  <section class="panel">
+    <h2>Your details</h2>
+    <dl class="kv">
+      <dt>Name</dt><dd>{{ user.full_name }}</dd>
+      <dt>Customer ID</dt><dd class="num">{{ customer.customer_id }}</dd>
+      <dt>Email</dt><dd>{{ user.email }} {% if user.email_verified %}<span class="tag ok">Verified</span>{% else %}<span class="tag wait">Not verified</span>{% endif %}</dd>
+      <dt>Mobile</dt><dd class="num">+91 {{ customer.phone }}</dd>
+      <dt>Address</dt><dd>{{ customer.address_line }}, {{ customer.city }}, {{ customer.state }} {{ customer.postal_code }}</dd>
+      <dt>KYC status</dt><dd>{% if customer.is_kyc_verified %}<span class="tag ok">Verified</span>{% elif customer.kyc_status == 'rejected' %}<span class="tag bad">Rejected</span>{% else %}<span class="tag wait">Pending review</span>{% endif %}</dd>
+      <dt>Daily transfer limit</dt><dd class="num">{{ customer.daily_transfer_limit|inr }}</dd>
+    </dl>
+    <p class="small muted" style="margin-top:1rem">To change personal details, contact the branch. Identity details are locked after registration.</p>
+  </section>
+  <section class="panel">
+    <h2>Security</h2>
+    <p>Choose a strong, unique password. Changing it signs you out everywhere else.</p>
+    <div class="row"><a class="btn" href="{% url 'accounts:password_change' %}">Change password</a><a class="btn ghost" href="{% url 'banking:activity' %}">Recent activity</a></div>
+  </section>
+</div>
+{% endblock %}
